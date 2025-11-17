@@ -2,13 +2,14 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6">
     <h1 class="text-3xl font-extrabold text-orange-500 mb-6">Team Leave Requests</h1>
 
-    <div class="flex flex-wrap gap-4 mb-6">
+    <div class="flex flex-wrap gap-4 mb-6 items-end">
       <input
         v-model="filters.employeeName"
         type="text"
         placeholder="Search by employee name..."
         class="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm"
       />
+
       <select
         v-model="filters.type"
         class="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm"
@@ -18,6 +19,7 @@
         <option value="VACATION">Vacation</option>
         <option value="UNPAID">Unpaid</option>
       </select>
+
       <select
         v-model="filters.status"
         class="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm"
@@ -27,6 +29,25 @@
         <option value="APPROVED">Approved</option>
         <option value="REJECTED">Rejected</option>
       </select>
+
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-gray-500 dark:text-gray-400">From</label>
+        <input
+          type="date"
+          v-model="filters.startDateFrom"
+          class="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm"
+        />
+      </div>
+
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-gray-500 dark:text-gray-400">To</label>
+        <input
+          type="date"
+          v-model="filters.endDateTo"
+          class="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm"
+        />
+      </div>
+
       <button
         @click="fetchLeaves(0)"
         class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition"
@@ -131,7 +152,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import api from '../lib/api'
@@ -148,7 +168,13 @@ interface LeaveResponse {
 }
 
 const leaves = ref<LeaveResponse[]>([])
-const filters = ref({ employeeName: '', type: '', status: '' })
+const filters = ref({
+  employeeName: '',
+  type: '',
+  status: '',
+  startDateFrom: '',
+  endDateTo: ''
+})
 const currentPage = ref(0)
 const totalPages = ref(1)
 const loading = ref(false)
@@ -182,9 +208,11 @@ async function fetchLeaves(page = 0) {
   if (filters.value.employeeName) params.append('employeeName', filters.value.employeeName)
   if (filters.value.type) params.append('type', filters.value.type)
   if (filters.value.status) params.append('status', filters.value.status)
+  if (filters.value.startDateFrom) params.append('startFrom', filters.value.startDateFrom)
+  if (filters.value.endDateTo) params.append('endTo', filters.value.endDateTo)
 
   try {
-    const { data } = await api.get(`/api/v1/leaves?${params.toString()}`)
+    const { data } = await api.get(`/api/v1/leaves/team?${params.toString()}`)
     leaves.value = data.content || []
     totalPages.value = data.totalPages || 1
     currentPage.value = data.number || 0
@@ -196,7 +224,7 @@ async function fetchLeaves(page = 0) {
 }
 
 function clearFilters() {
-  filters.value = { employeeName: '', type: '', status: '' }
+  filters.value = { employeeName: '', type: '', status: '', startDateFrom: '', endDateTo: '' }
   fetchLeaves(0)
 }
 

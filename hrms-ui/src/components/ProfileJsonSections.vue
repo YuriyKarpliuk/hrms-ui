@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-8">
 
-    <SectionCard title="🗣️ Languages" @edit="openModal('languages')" :editable="true">
+    <SectionCard title=" Languages" @edit="openModal('languages')" :editable="true">
       <div v-if="langs.length" class="flex flex-wrap gap-2">
         <span v-for="(l, i) in langs" :key="i" class="px-3 py-1 rounded-full bg-gray-700 text-sm text-gray-200">
           {{ l.language }} <span class="text-gray-400 text-xs">• {{ l.level }}</span>

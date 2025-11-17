@@ -46,6 +46,7 @@ import {
   Clock,
   Wallet,
   Users,
+  Building
 } from "lucide-vue-next"
 import { getUserRoles } from "../services/authService"
 
@@ -55,14 +56,16 @@ const route = useRoute()
 const roles = getUserRoles()
 
 const menuItems = [
-  { path: "/dashboard", label: "Dashboard", icon: Home, roles: ["USER", "HR", "ADMIN"] },
+  { path: "/dashboard", label: "Dashboard", icon: Home, roles: ["USER", "HR", "ADMIN", "MANAGER"] },
+  { path: "/manager-dashboard", label: "Manager Dashboard", icon: Home, roles: ["MANAGER"] },
   { path: "/leaves", label: "Leaves", icon: Calendar, roles: ["USER", "HR", "MANAGER", "ADMIN"] },
   { path: "/manager/leaves", label: "Team Leaves", icon: Calendar, roles: ["MANAGER"] },
   { path: "/timesheets", label: "Timesheet", icon: Clock, roles: ["USER", "MANAGER"] },
 { path: "/manager/timesheets", label: "Team Timesheets", icon: Clock, roles: ["MANAGER"] },
   { path: "/payrolls", label: "Payroll", icon: Wallet, roles: ["USER", "MANAGER"] },
   { path: "/manager/payrolls", label: "Team Payrolls", icon: Wallet, roles: ["MANAGER"] },
-  { path: "/employees", label: "Employees", icon: Users, roles: ["HR", "ADMIN",] },
+  { path: "/employees", label: "Employees", icon: Users, roles:["USER", "HR", "MANAGER", "ADMIN"] },
+{ path: "/my-organization", label: "My Organization", icon: Building, roles: ["USER", "HR", "MANAGER", "ADMIN"] },
 ]
 
 const visibleMenuItems = computed(() =>

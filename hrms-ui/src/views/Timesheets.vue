@@ -37,7 +37,7 @@
         <div>
           <label class="block text-sm mb-1">Start Date From</label>
           <input
-            v-model="filters.startDateFrom"
+            v-model="filters.weekStartFrom"
             type="date"
             class="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
           />
@@ -46,7 +46,7 @@
         <div>
           <label class="block text-sm mb-1">End Date To</label>
           <input
-            v-model="filters.endDateTo"
+            v-model="filters.weekEndTo"
             type="date"
             class="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
           />
@@ -55,7 +55,7 @@
         <div>
           <label class="block text-sm mb-1">Status</label>
           <select
-            v-model="filters.timesheetStatus"
+            v-model="filters.status"
             class="w-full p-2 rounded border dark:bg-gray-700 dark:border-gray-600"
           >
             <option value="">All</option>
@@ -127,18 +127,18 @@
                   class="px-3 py-1 text-xs font-semibold rounded-full"
                   :class="{
                     'bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200':
-                      t.timesheetStatus === 'DRAFT',
+                      t.status === 'DRAFT',
                     'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200':
-                      t.timesheetStatus === 'SUBMITTED',
+                      t.status === 'SUBMITTED',
                     'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200':
-                      t.timesheetStatus === 'APPROVED',
+                      t.status === 'APPROVED',
                     'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200':
-                      t.timesheetStatus === 'REJECTED',
+                      t.status === 'REJECTED',
                     'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200':
-                      !t.timesheetStatus,
+                      !t.status,
                   }"
                 >
-                  {{ t.timesheetStatus || "DRAFT" }}
+                  {{ t.status || "DRAFT" }}
                 </span>
               </td>
               <td class="py-3 px-4 text-center">
@@ -196,7 +196,7 @@ interface Timesheet {
   id: number;
   weekStart: string;
   weekEnd: string;
-  timesheetStatus: string;
+  status: string;
   entries?: any[];
 }
 
@@ -214,9 +214,9 @@ const size = ref(5);
 
 const filters = ref({
   employeeId: null as number | null,
-  startDateFrom: "",
-  endDateTo: "",
-  timesheetStatus: "",
+  weekStartFrom: "",
+  weekEndTo: "",
+  status: "",
 });
 
 const toast = ref({
@@ -233,10 +233,8 @@ function clearFilters() {
   filters.value = {
     employeeId:  localStorage.getItem("currentUserId"),
     status: "",
-    startDateFrom: "",
-    startDateTo: "",
-    endDateFrom: "",
-    endDateTo: "",
+    weekStartFrom: "",
+    weekEndTo: "",
   };
   searchTimesheets(); 
 }
@@ -247,9 +245,9 @@ async function searchTimesheets() {
   try {
     const payload = {
       employeeId: employeeId,
-      startDateFrom: filters.value.startDateFrom || null,
-      endDateTo: filters.value.endDateTo || null,
-      status: filters.value.timesheetStatus || "",
+      weekStartFrom: filters.value.weekStartFrom || null,
+      weekEndTo: filters.value.weekEndTo || null,
+      status: filters.value.status || null,
     };
     const { data } = await api.post(
       `/api/v1/timesheets/search?page=${page.value - 1}&size=${size.value}`,
