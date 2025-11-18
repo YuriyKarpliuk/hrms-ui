@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router"
 import Login from "../views/Login.vue"
-import Dashboard from "../views/Dashboard.vue"
 import UserDashboard from "../views/UserDashboard.vue"
 import ManagerDashboard from "../views/ManagerDashboard.vue"
+import HrDashboard from "../views/HrDashboard.vue"
 import Profile from "../views/Profile.vue"
 import MyOrganization from "../views/MyOrganization.vue"
 import LeavesUserView from "../views/LeavesUserView.vue"
@@ -25,9 +25,9 @@ import { getAccessToken, getUserRoles } from "../services/authService"
 const routes = [
   { path: "/login", name: "Login", component: Login },
   { path: "/home", name: "Home", component: Home },
-  { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
-  { path: "/user-dashboard", component: UserDashboard, meta: { roles: ["USER", "MANAGER"] } },
+  { path: "/user-dashboard", component: UserDashboard, meta: { requiresAuth: true } },
   { path: "/manager-dashboard", component: ManagerDashboard, meta: { roles: ["MANAGER"] } },
+  { path: "/hr-dashboard", component: HrDashboard, meta: { roles: ["HR"] } },
   { path: "/profile", component: Profile, meta: { requiresAuth: true } },
   { path: "/leaves", component: LeavesUserView, meta: { roles: ["USER", "HR", "MANAGER", "ADMIN"] } },
   { path: "/manager/leaves", component: LeavesTeam, meta: { roles: ["MANAGER"] } },
@@ -37,8 +37,8 @@ const routes = [
   { path: "/timesheets/:id", component: TimesheetDetails, meta: { roles: ["USER", "HR", "MANAGER", "ADMIN"] } },
   { path: "/payrolls", component: Payrolls, meta: { roles: ["USER", "MANAGER"], } },
   { path: "/manager/payrolls", component: PayrollsTeam, meta: { roles: ["MANAGER"], } },
-  { path: "/", redirect: "/dashboard" },
-  { path: "/:pathMatch(.*)*", redirect: "/dashboard" },
+  { path: "/", redirect: "/user-dashboard" },
+  { path: "/:pathMatch(.*)*", redirect: "/user-dashboard" },
   {
   path: '/timesheets/team/:id',
   name: 'TimesheetTeamDetail',
@@ -61,6 +61,33 @@ const routes = [
   meta: { roles: ["USER", "HR", "MANAGER", "ADMIN"] }
 },
 
+{
+  path: "/birthdays",
+  name: "Birthdays",
+  component: () => import("../components/BirthdayDashboard.vue"),
+  meta: {
+    requiresAuth: true,
+    roles: ["MANAGER", "HR", "ADMIN", "USER"],
+  },
+},
+{
+  path: "/hr/employees/create",
+  component: () => import("../views/HrEmployeeCreate.vue"),
+  meta: { requiresHR: true }
+},
+{
+  path: "/hr/employees/:id/edit",
+  component: () => import("../views/HrEmployeeEdit.vue"),
+  meta: { requiresHR: true }
+},
+{
+  path: "/hr/tasks",
+  name: "HrTasks",
+  component: () => import("../views/HrTaskView.vue"),
+  meta: { requiresAuth: true, roles: ["HR", "ADMIN"] }
+}
+
+
 
 ]
 
@@ -78,13 +105,8 @@ router.beforeEach((to, _, next) => {
     return
   }
 
-  if (to.path === "/dashboard" && (roles.includes("USER") || roles.includes( "MANAGER"))) {
-    next("/user-dashboard")
-    return
-  }
-
   if (to.meta.roles && !roles.some((r) => to.meta.roles.includes(r))) {
-    next("/dashboard")
+    next("/user-dashboard")
     return
   }
 

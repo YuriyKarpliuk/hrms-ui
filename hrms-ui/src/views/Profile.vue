@@ -6,7 +6,6 @@
       v-if="user"
       class="bg-gray-800/90 backdrop-blur-md border border-gray-700 rounded-2xl shadow-2xl p-8 w-full max-w-4xl"
     >
-      <!-- Avatar + Name -->
       <div class="flex flex-col items-center mb-8">
         <div class="relative group">
           <img
@@ -35,7 +34,6 @@
         <p class="text-gray-400">{{ user.position || "Employee" }}</p>
       </div>
 
-      <!-- Details Section -->
       <div class="bg-gray-800/60 border border-gray-700 rounded-xl p-5 mt-8">
         <h3
           class="text-xl font-semibold text-orange-400 mb-4 flex items-center gap-2"
@@ -160,7 +158,6 @@
         </div>
       </div>
 
-      <!-- About -->
       <div class="mt-5">
         <label>About</label>
         <textarea
@@ -171,8 +168,6 @@
           class="input-base"
         ></textarea>
       </div>
-
-      <!-- CV Section -->
       <div class="mt-8">
         <h3
           class="text-xl font-semibold text-orange-400 mb-3 flex items-center gap-2"
@@ -204,7 +199,6 @@
         </div>
       </div>
 
-      <!-- Organization Info -->
       <div class="bg-gray-800/60 border border-gray-700 rounded-xl p-5 mt-6">
         <h3
           class="text-xl font-semibold text-orange-400 mb-4 flex items-center gap-2"
@@ -243,7 +237,6 @@
         </div>
       </div>
 
-      <!-- JSON Sections -->
       <ProfileJsonSections
         class="mt-10"
         :employeeId="user.id"
@@ -253,8 +246,6 @@
         :workExperience="user.workExperience"
         :profile="user.profile"
       />
-
-      <!-- Buttons -->
       <div class="flex justify-center mt-10">
         <button
           @click="handleLogout"
@@ -329,6 +320,7 @@ const router = useRouter();
 const defaultAvatar = new URL("../assets/images/default-avatar.png", import.meta.url).href;
 const editing = ref(false);
 const toast = ref({ visible: false, message: "", type: "success" });
+const isAdmin = roles.includes("ADMIN");
 
 function formatDate(dateString?: string | null): string {
   if (!dateString) return "";

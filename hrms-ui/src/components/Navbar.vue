@@ -63,6 +63,12 @@
                   {{ n.title }}
                 </p>
                 <p class="text-gray-300 text-sm">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">
+                  From:
+                  <span class="text-orange-300 font-semibold">{{
+                    n.senderName
+                  }}</span>
+                </p>
                 <p class="text-xs text-gray-500 mt-1">
                   {{ new Date(n.createdAt).toLocaleString() }}
                 </p>
@@ -137,12 +143,12 @@ const notifications = ref<any[]>([]);
 const unreadCount = ref(0);
 const scrolled = ref(false);
 const profileWrapper = ref<HTMLElement | null>(null);
-let pollInterval: any = null
+let pollInterval: any = null;
 
 function startPolling() {
   pollInterval = setInterval(() => {
-    fetchNotifications()
-  }, 30000)
+    fetchNotifications();
+  }, 30000);
 }
 onMounted(async () => {
   const token = getAccessToken();
@@ -159,16 +165,16 @@ onMounted(async () => {
 });
 async function markAsRead(id: number) {
   try {
-    await api.post(`/api/v1/user-notifications/${id}/read`)
-    const notif = notifications.value.find((n) => n.id === id)
-    if (notif) notif.read = true
+    await api.post(`/api/v1/user-notifications/${id}/read`);
+    const notif = notifications.value.find((n) => n.id === id);
+    if (notif) notif.read = true;
   } catch (err) {
-    console.error("Failed to mark notification as read:", err)
+    console.error("Failed to mark notification as read:", err);
   }
 }
 
 function handleNotificationClick(n: any) {
-  markAsRead(n.id)
+  markAsRead(n.id);
 }
 
 async function fetchNotifications() {
@@ -182,7 +188,6 @@ async function fetchNotifications() {
     console.error("Failed to fetch notifications:", err);
   }
 }
-
 
 function toggleDropdown() {
   dropdownOpen.value = !dropdownOpen.value;
@@ -241,8 +246,7 @@ onMounted(() => {
 });
 onUnmounted(() => {
   window.removeEventListener("click", handleClickOutside);
-    if (pollInterval) clearInterval(pollInterval)
-
+  if (pollInterval) clearInterval(pollInterval);
 });
 </script>
 

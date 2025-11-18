@@ -46,7 +46,9 @@ import {
   Clock,
   Wallet,
   Users,
-  Building
+  Building,
+  Cake,
+  ClipboardList
 } from "lucide-vue-next"
 import { getUserRoles } from "../services/authService"
 
@@ -56,16 +58,29 @@ const route = useRoute()
 const roles = getUserRoles()
 
 const menuItems = [
-  { path: "/dashboard", label: "Dashboard", icon: Home, roles: ["USER", "HR", "ADMIN", "MANAGER"] },
+  { path: "/user-dashboard", label: "Dashboard", icon: Home, roles: ["USER", "HR", "ADMIN", "MANAGER"] },
   { path: "/manager-dashboard", label: "Manager Dashboard", icon: Home, roles: ["MANAGER"] },
-  { path: "/leaves", label: "Leaves", icon: Calendar, roles: ["USER", "HR", "MANAGER", "ADMIN"] },
+  { path: "/hr-dashboard", label: "HR Dashboard", icon: Home, roles: ["HR"] },
+  { path: "/leaves", label: "Leaves", icon: Calendar, roles: ["USER", "HR", "MANAGER"] },
   { path: "/manager/leaves", label: "Team Leaves", icon: Calendar, roles: ["MANAGER"] },
-  { path: "/timesheets", label: "Timesheet", icon: Clock, roles: ["USER", "MANAGER"] },
+  { path: "/timesheets", label: "Timesheet", icon: Clock, roles: ["USER", "MANAGER", "HR"] },
 { path: "/manager/timesheets", label: "Team Timesheets", icon: Clock, roles: ["MANAGER"] },
-  { path: "/payrolls", label: "Payroll", icon: Wallet, roles: ["USER", "MANAGER"] },
+  { path: "/payrolls", label: "Payroll", icon: Wallet, roles: ["USER", "MANAGER", "HR"] },
   { path: "/manager/payrolls", label: "Team Payrolls", icon: Wallet, roles: ["MANAGER"] },
   { path: "/employees", label: "Employees", icon: Users, roles:["USER", "HR", "MANAGER", "ADMIN"] },
-{ path: "/my-organization", label: "My Organization", icon: Building, roles: ["USER", "HR", "MANAGER", "ADMIN"] },
+{ path: "/my-organization", label: "My Organization", icon: Building, roles: ["USER", "HR", "MANAGER"] },
+ {
+    path: "/birthdays",
+    label: "Birthdays",
+    icon: Cake,
+    roles: ["MANAGER", "HR", "USER"],
+  },
+  {
+    label: "HR Tasks",
+    path: "/hr/tasks",
+    icon: ClipboardList,
+    roles: ["HR"]
+  },
 ]
 
 const visibleMenuItems = computed(() =>

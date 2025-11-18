@@ -126,7 +126,7 @@ const avgHours = ref(0)
 async function fetchManagerDashboard() {
   const managerId = localStorage.getItem("currentUserId")
   if (!managerId) return
-
+8
   try {
     const { data } = await api.get(`/api/v1/employees/manager/dashboard/${managerId}`)
     metrics.value = {
