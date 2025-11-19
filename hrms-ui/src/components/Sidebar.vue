@@ -36,7 +36,6 @@
   </aside>
 </template>
 
-
 <script setup lang="ts">
 import { computed } from "vue"
 import { useRoute } from "vue-router"
@@ -48,7 +47,9 @@ import {
   Users,
   Building,
   Cake,
-  ClipboardList
+  ClipboardList,
+  Shield,
+  FileText
 } from "lucide-vue-next"
 import { getUserRoles } from "../services/authService"
 
@@ -56,35 +57,53 @@ const { collapsed } = defineProps<{ collapsed: boolean }>()
 const route = useRoute()
 
 const roles = getUserRoles()
+const isAdmin = computed(() => roles.includes("ADMIN"))
 
-const menuItems = [
-  { path: "/user-dashboard", label: "Dashboard", icon: Home, roles: ["USER", "HR", "ADMIN", "MANAGER"] },
-  { path: "/manager-dashboard", label: "Manager Dashboard", icon: Home, roles: ["MANAGER"] },
-  { path: "/hr-dashboard", label: "HR Dashboard", icon: Home, roles: ["HR"] },
-  { path: "/leaves", label: "Leaves", icon: Calendar, roles: ["USER", "HR", "MANAGER"] },
-  { path: "/manager/leaves", label: "Team Leaves", icon: Calendar, roles: ["MANAGER"] },
-  { path: "/timesheets", label: "Timesheet", icon: Clock, roles: ["USER", "MANAGER", "HR"] },
-{ path: "/manager/timesheets", label: "Team Timesheets", icon: Clock, roles: ["MANAGER"] },
-  { path: "/payrolls", label: "Payroll", icon: Wallet, roles: ["USER", "MANAGER", "HR"] },
-  { path: "/manager/payrolls", label: "Team Payrolls", icon: Wallet, roles: ["MANAGER"] },
-  { path: "/employees", label: "Employees", icon: Users, roles:["USER", "HR", "MANAGER", "ADMIN"] },
-{ path: "/my-organization", label: "My Organization", icon: Building, roles: ["USER", "HR", "MANAGER"] },
- {
-    path: "/birthdays",
-    label: "Birthdays",
-    icon: Cake,
-    roles: ["MANAGER", "HR", "USER"],
-  },
-  {
-    label: "HR Tasks",
-    path: "/hr/tasks",
-    icon: ClipboardList,
-    roles: ["HR"]
-  },
-]
+const menuItems = computed(() => {
+  if (isAdmin.value) {
+    return [
+      { path: "/admin-dashboard", label: "Admin Dashboard", icon: Home, roles: ["ADMIN"] },
+      { path: "/employees", label: "Employees", icon: Users, roles: ["ADMIN"] },
+      { path: "/admin/organizations", label: "Organizations", icon: Building, roles: ["ADMIN"] },
+      { path: "/admin/departments", label: "Departments", icon: Building, roles: ["ADMIN"] },
+    ]
+  }
+
+  return [
+    { path: "/user-dashboard", label: "Dashboard", icon: Home, roles: ["USER", "HR", "MANAGER"] },
+    { path: "/manager-dashboard", label: "Manager Dashboard", icon: Home, roles: ["MANAGER"] },
+    { path: "/hr-dashboard", label: "HR Dashboard", icon: Home, roles: ["HR"] },
+
+    { path: "/leaves", label: "Leaves", icon: Calendar, roles: ["USER", "HR", "MANAGER"] },
+    { path: "/manager/leaves", label: "Team Leaves", icon: Calendar, roles: ["MANAGER"] },
+
+    { path: "/timesheets", label: "Timesheet", icon: Clock, roles: ["USER", "MANAGER", "HR"] },
+    { path: "/manager/timesheets", label: "Team Timesheets", icon: Clock, roles: ["MANAGER"] },
+
+    { path: "/payrolls", label: "Payroll", icon: Wallet, roles: ["USER", "MANAGER", "HR"] },
+    { path: "/manager/payrolls", label: "Team Payrolls", icon: Wallet, roles: ["MANAGER"] },
+
+    { path: "/employees", label: "Employees", icon: Users, roles: ["USER", "HR", "MANAGER", "ADMIN"] },
+
+    { path: "/my-organization", label: "My Organization", icon: Building, roles: ["USER", "HR", "MANAGER"] },
+
+    {
+      path: "/birthdays",
+      label: "Birthdays",
+      icon: Cake,
+      roles: ["MANAGER", "HR", "USER"],
+    },
+    {
+      label: "HR Tasks",
+      path: "/hr/tasks",
+      icon: ClipboardList,
+      roles: ["HR"]
+    },
+  ]
+})
 
 const visibleMenuItems = computed(() =>
-  menuItems.filter((item) => item.roles.some((r) => roles.includes(r)))
+  menuItems.value.filter((item) => item.roles.some((r) => roles.includes(r)))
 )
 </script>
 

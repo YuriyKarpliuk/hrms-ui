@@ -85,8 +85,12 @@ const routes = [
   name: "HrTasks",
   component: () => import("../views/HrTaskView.vue"),
   meta: { requiresAuth: true, roles: ["HR", "ADMIN"] }
-}
+},
 
+  { path: "/admin-dashboard", component: () => import("../views/AdminDashboard.vue"), meta: { roles: ["ADMIN"] } },
+  { path: "/admin/organizations", component: () => import("../views/AdminOrganizations.vue"), meta: { roles: ["ADMIN"] } },
+  { path: "/admin/departments", component: () => import("../views/AdminDepartments.vue"), meta: { roles: ["ADMIN"] } },
+  { path: "/admin/logs", component: () => import("../views/AdminLogs.vue"), meta: { roles: ["ADMIN"] } },
 
 
 ]
@@ -100,17 +104,32 @@ router.beforeEach((to, _, next) => {
   const token = getAccessToken()
   const roles = getUserRoles()
 
-  if (to.meta.requiresAuth && !token) {
+  if (!token && to.path !== "/login") {
     next("/login")
     return
   }
 
+  if (roles.includes("ADMIN") && to.path === "/user-dashboard") {
+    next("/admin-dashboard")
+    return
+  }
+
+  if (roles.includes("ADMIN") && (to.path === "/" || to.path === "/home")) {
+    next("/admin-dashboard")
+    return
+  }
+
   if (to.meta.roles && !roles.some((r) => to.meta.roles.includes(r))) {
-    next("/user-dashboard")
+    if (roles.includes("ADMIN")) {
+      next("/admin-dashboard")
+    } else {
+      next("/user-dashboard")
+    }
     return
   }
 
   next()
 })
+
 
 export default router

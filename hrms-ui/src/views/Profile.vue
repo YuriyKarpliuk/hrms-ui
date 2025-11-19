@@ -157,95 +157,96 @@
           </div>
         </div>
       </div>
-
-      <div class="mt-5">
-        <label>About</label>
-        <textarea
-          v-model="user.about"
-          :readonly="!editing"
-          placeholder="Write something about yourself..."
-          rows="3"
-          class="input-base"
-        ></textarea>
-      </div>
-      <div class="mt-8">
-        <h3
-          class="text-xl font-semibold text-orange-400 mb-3 flex items-center gap-2"
-        >
-          <i class="mdi mdi-file-account text-orange-400 text-2xl"></i> My CV
-        </h3>
-        <div class="flex items-center gap-3">
-          <input
-            type="file"
-            id="cv-upload"
-            accept="application/pdf"
-            class="hidden"
-            @change="handleCvUpload"
-          />
-          <label
-            for="cv-upload"
-            class="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg cursor-pointer text-white font-semibold shadow transition-all"
-          >
-            📄 Upload CV
-          </label>
-          <a
-            v-if="user.cvKey"
-            :href="user.cvKey"
-            target="_blank"
-            class="text-orange-400 underline hover:text-orange-300"
-          >
-            View My CV
-          </a>
+      <div v-if="!isAdmin">
+        <div class="mt-5">
+          <label>About</label>
+          <textarea
+            v-model="user.about"
+            :readonly="!editing"
+            placeholder="Write something about yourself..."
+            rows="3"
+            class="input-base"
+          ></textarea>
         </div>
-      </div>
-
-      <div class="bg-gray-800/60 border border-gray-700 rounded-xl p-5 mt-6">
-        <h3
-          class="text-xl font-semibold text-orange-400 mb-4 flex items-center gap-2"
-        >
-          <i
-            class="mdi mdi-office-building-outline text-2xl text-orange-400"
-          ></i>
-          Organization Details
-        </h3>
-        <div class="divide-y divide-gray-700">
-          <div class="flex justify-between py-2">
-            <span class="text-gray-400">Organization</span>
-            <span class="text-gray-200 font-medium">{{
-              user.organization?.name || "—"
-            }}</span>
-          </div>
-          <div class="flex justify-between py-2">
-            <span class="text-gray-400">Department</span>
-            <span class="text-gray-200 font-medium">{{
-              user.department?.name || "—"
-            }}</span>
-          </div>
-          <div class="flex justify-between py-2">
-            <span class="text-gray-400">Manager</span>
-            <span class="text-gray-200 font-medium"
-              >{{ user.manager?.firstName }}
-              {{ user.manager?.lastName || "—" }}</span
+        <div class="mt-8">
+          <h3
+            class="text-xl font-semibold text-orange-400 mb-3 flex items-center gap-2"
+          >
+            <i class="mdi mdi-file-account text-orange-400 text-2xl"></i> My CV
+          </h3>
+          <div class="flex items-center gap-3">
+            <input
+              type="file"
+              id="cv-upload"
+              accept="application/pdf"
+              class="hidden"
+              @change="handleCvUpload"
+            />
+            <label
+              for="cv-upload"
+              class="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg cursor-pointer text-white font-semibold shadow transition-all"
             >
-          </div>
-          <div class="flex justify-between py-2">
-            <span class="text-gray-400">HR</span>
-            <span class="text-gray-200 font-medium"
-              >{{ user.hr?.firstName }} {{ user.hr?.lastName || "—" }}</span
+              📄 Upload CV
+            </label>
+            <a
+              v-if="user.cvKey"
+              :href="user.cvKey"
+              target="_blank"
+              class="text-orange-400 underline hover:text-orange-300"
             >
+              View My CV
+            </a>
           </div>
         </div>
-      </div>
 
-      <ProfileJsonSections
-        class="mt-10"
-        :employeeId="user.id"
-        :languages="user.languages"
-        :address="user.address"
-        :education="user.education"
-        :workExperience="user.workExperience"
-        :profile="user.profile"
-      />
+        <div class="bg-gray-800/60 border border-gray-700 rounded-xl p-5 mt-6">
+          <h3
+            class="text-xl font-semibold text-orange-400 mb-4 flex items-center gap-2"
+          >
+            <i
+              class="mdi mdi-office-building-outline text-2xl text-orange-400"
+            ></i>
+            Organization Details
+          </h3>
+          <div class="divide-y divide-gray-700">
+            <div class="flex justify-between py-2">
+              <span class="text-gray-400">Organization</span>
+              <span class="text-gray-200 font-medium">{{
+                user.organization?.name || "—"
+              }}</span>
+            </div>
+            <div class="flex justify-between py-2">
+              <span class="text-gray-400">Department</span>
+              <span class="text-gray-200 font-medium">{{
+                user.department?.name || "—"
+              }}</span>
+            </div>
+            <div class="flex justify-between py-2">
+              <span class="text-gray-400">Manager</span>
+              <span class="text-gray-200 font-medium"
+                >{{ user.manager?.firstName }}
+                {{ user.manager?.lastName || "—" }}</span
+              >
+            </div>
+            <div class="flex justify-between py-2">
+              <span class="text-gray-400">HR</span>
+              <span class="text-gray-200 font-medium"
+                >{{ user.hr?.firstName }} {{ user.hr?.lastName || "—" }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <ProfileJsonSections
+          class="mt-10"
+          :employeeId="user.id"
+          :languages="user.languages"
+          :address="user.address"
+          :education="user.education"
+          :workExperience="user.workExperience"
+          :profile="user.profile"
+        />
+      </div>
       <div class="flex justify-center mt-10">
         <button
           @click="handleLogout"
@@ -300,7 +301,8 @@ interface EmployeeResponse {
   hr?: { id: number; firstName: string; lastName: string };
   status?: string;
   taxNumber?: string;
-  hiredAt?: string;terminatedAt?: string;
+  hiredAt?: string;
+  terminatedAt?: string;
   age?: number;
   languages?: any;
   address?: any;
@@ -317,16 +319,25 @@ interface EmployeeResponse {
 
 const user = ref<EmployeeResponse | null>(null);
 const router = useRouter();
-const defaultAvatar = new URL("../assets/images/default-avatar.png", import.meta.url).href;
+const defaultAvatar = new URL(
+  "../assets/images/default-avatar.png",
+  import.meta.url
+).href;
 const editing = ref(false);
 const toast = ref({ visible: false, message: "", type: "success" });
+import { getUserRoles } from "../services/authService";
+const roles = getUserRoles();
 const isAdmin = roles.includes("ADMIN");
 
 function formatDate(dateString?: string | null): string {
   if (!dateString) return "";
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "numeric" });
+    return date.toLocaleDateString("uk-UA", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   } catch {
     return dateString;
   }
@@ -366,9 +377,13 @@ async function handleAvatarUpload(e: Event) {
   try {
     const formData = new FormData();
     formData.append("file", file);
-    const { data } = await api.post(`/api/v1/employees/${user.value.id}/avatar`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const { data } = await api.post(
+      `/api/v1/employees/${user.value.id}/avatar`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
     user.value.avatarUrl = data.avatarUrl;
     showToast("Avatar updated successfully!", "success");
   } catch (err) {
@@ -387,9 +402,13 @@ async function handleCvUpload(e: Event) {
   try {
     const formData = new FormData();
     formData.append("file", file);
-    const { data } = await api.post(`/api/v1/employees/${user.value.id}/cv`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const { data } = await api.post(
+      `/api/v1/employees/${user.value.id}/cv`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
     user.value.cvKey = data.cvKey;
     showToast("CV uploaded successfully!", "success");
   } catch (err) {
